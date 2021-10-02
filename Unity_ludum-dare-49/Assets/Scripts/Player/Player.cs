@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using Utils;
 
-public class PlayerController : SingletonBehaviour<PlayerController>, IDamagable
+[DefaultExecutionOrder(-1)]
+public class Player : Entity, IDamagable
 {
+    public static FloatEffectorStack PlayerTimeScale;
+
     public CameraRecoil Recoil;
     public Camera Camera;
 
@@ -10,21 +13,17 @@ public class PlayerController : SingletonBehaviour<PlayerController>, IDamagable
 
     public Weapon Weapon;
 
-    public int Health = 100;
-    private int _maxHealth;
+    private float _timeScale = 1;
 
-    protected override void Initialize()
+    protected override void Awake()
     {
-        _maxHealth = Health;
-    }
-
-    protected override void Shutdown()
-    {
-
+        base.Awake();
+        PlayerTimeScale = LocalTimeScale; //give a copy of our local time to the static field
     }
 
     private void Update()
     {
+        _timeScale = PlayerTimeScale.Value;
         PlayerActionInput();
     }
 
@@ -48,11 +47,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>, IDamagable
 
     public void TakeDamage(int damage)
     {
-        Health -= damage;
-        if (Health <= 0)
-        {
-            Die();
-        }
+        Die();
     }
 
     public void Die()
@@ -60,9 +55,8 @@ public class PlayerController : SingletonBehaviour<PlayerController>, IDamagable
         Transform respawn = transform; //temp respwan at same place
         transform.position = respawn.position;
         transform.rotation = respawn.rotation;
-        Health = _maxHealth;
 
-        //do some stuff
+        //do respawn
         //Destroy(gameObject);
     }
 

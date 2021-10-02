@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 public class Weapon : MonoBehaviour
 {
     [SerializeField]
-    private PlayerController _owner;
+    private Player _owner;
 
     public Transform ShotOrigin;
 

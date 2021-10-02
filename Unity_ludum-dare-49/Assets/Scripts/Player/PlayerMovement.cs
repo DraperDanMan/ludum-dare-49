@@ -92,7 +92,8 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         if (Locked) return;
-        UpdatePlayerMovement(Time.fixedDeltaTime);
+        float timeScale = Time.fixedDeltaTime;
+        UpdatePlayerMovement(timeScale);
     }
 
     private void UpdateLookDirection()
@@ -148,6 +149,6 @@ public class PlayerMovement : MonoBehaviour
             _grounded = false;
         }
 
-        _rigidbody.velocity = playerPhysicsMovement;
+        _rigidbody.velocity = playerPhysicsMovement * Player.PlayerTimeScale.Value;
     }
 }
