@@ -122,7 +122,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (_grounded && Input.GetKeyDown(KeyCode.Space))
         {
-            _rigidbody.AddForce(body.up*_jumpForce, ForceMode.Impulse);
+            var invTimeScale = 1 + (1 -Player.PlayerTimeScale.Value);
+            _rigidbody.AddForce(body.up*_jumpForce*invTimeScale, ForceMode.Impulse);
             _doGrounded = false;
             _grounded = false;
         }
@@ -135,7 +136,11 @@ public class PlayerMovement : MonoBehaviour
     {
         playerPhysicsMovement = Vector3.SmoothDamp (playerPhysicsMovement, targetMovement,
                                 ref _smoothMoveVelocity, 1/_playerAccel,Mathf.Infinity,deltaTime);
-        playerPhysicsMovement.y = _rigidbody.velocity.y;
+
+        var timeScale = Player.PlayerTimeScale.Value;
+        var timeAffectedMovement = playerPhysicsMovement * timeScale;
+        var yVel = _rigidbody.velocity.y;
+        timeAffectedMovement.y = timeScale > 1 ? yVel : yVel * timeScale; //only apply scale on slow down force
 
         Ray ray = new Ray (transform.position, -transform.up);
         RaycastHit hit;
@@ -149,6 +154,7 @@ public class PlayerMovement : MonoBehaviour
             _grounded = false;
         }
 
-        _rigidbody.velocity = playerPhysicsMovement * Player.PlayerTimeScale.Value;
+        _rigidbody.velocity = timeAffectedMovement;
+        Player.Position = _rigidbody.position;
     }
 }

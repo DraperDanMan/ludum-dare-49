@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 public class Enemy : Entity
 {
@@ -9,6 +10,14 @@ public class Enemy : Entity
 
     [SerializeField]
     private float moveSpeed = 8;
+
+    [SerializeField]
+    private float turnSpeed = 45;
+
+    private float _timeAdjustedSpeed;
+    private float _timeAdjustedTurnSpeed;
+
+    [SerializeField] private Transform _visual;
 
     protected virtual void Awake()
     {
@@ -22,7 +31,15 @@ public class Enemy : Entity
 
     private void SetTimeAdjustedSpeed()
     {
-        float timeAdjustedSpeed = moveSpeed * CurrentTimeScale;
-        transform.position = transform.right * (Mathf.Sin(Time.time)+5) * timeAdjustedSpeed;
+        float deltaTime = Time.fixedDeltaTime;
+        var toPlayerDir = transform.position.Direction(Player.Position);
+        _timeAdjustedSpeed = moveSpeed * deltaTime * CurrentTimeScale;
+        _timeAdjustedTurnSpeed = turnSpeed * deltaTime * CurrentTimeScale;
+
+        _rigidbody.velocity = _visual.forward * _timeAdjustedSpeed;
+
+        var forwardRot = Quaternion.LookRotation(_visual.forward);
+        var toPlaterRot = Quaternion.LookRotation(toPlayerDir);
+        _visual.rotation = Quaternion.RotateTowards(forwardRot,toPlaterRot,_timeAdjustedTurnSpeed);
     }
 }

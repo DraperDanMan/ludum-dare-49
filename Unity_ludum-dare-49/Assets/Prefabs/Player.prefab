@@ -654,11 +654,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6d446449adb374f90d9a17908439de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rigidbody: {fileID: 1594037155}
   Recoil: {fileID: 5620647287427530757}
   Camera: {fileID: 385097350251733129}
   Movement: {fileID: 6846578686483508304}
   Weapon: {fileID: 4790616553501968088}
-  Health: 100
 --- !u!114 &6846578686483508304
 MonoBehaviour:
   m_ObjectHideFlags: 0

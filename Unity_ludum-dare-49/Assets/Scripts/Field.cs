@@ -16,7 +16,7 @@ public class Field : MonoBehaviour
         var entity = rigid.GetComponent<Entity>();
         if (entity != null)
         {
-            entity.LocalTimeScale.Push(this,-0.8f);
+            ApplyEffect(entity);
         }
         _affectedRigidbodies.Add(rigid);
     }
@@ -28,11 +28,46 @@ public class Field : MonoBehaviour
         var entity = rigid.GetComponent<Entity>();
         if (entity != null)
         {
-            entity.LocalTimeScale.Pop(this);
+            RemoveEffect(entity);
         }
         _affectedRigidbodies.Remove(rigid);
     }
 
+    private void ApplyEffect(Entity ent)
+    {
+        switch (Effect)
+        {
+            case FieldEffect.TimeSlow:
+                ent.LocalTimeScale.Push(this,0);
+                break;
+            case FieldEffect.TimeSpeed:
+                ent.LocalTimeScale.Push(this,2f);
+                break;
+            case FieldEffect.Gravity:
+                break;
+            case FieldEffect.UpDraft:
+                break;
+            case FieldEffect.Damage:
+                break;
+        }
+    }
+
+    private void RemoveEffect(Entity ent)
+    {
+        switch (Effect)
+        {
+            case FieldEffect.TimeSlow:
+            case FieldEffect.TimeSpeed: //both pop the current time effect whether thats slow or speed
+                ent.LocalTimeScale.Pop(this);
+                break;
+            case FieldEffect.Gravity:
+                break;
+            case FieldEffect.UpDraft:
+                break;
+            case FieldEffect.Damage:
+                break;
+        }
+    }
 
 
     public enum FieldEffect

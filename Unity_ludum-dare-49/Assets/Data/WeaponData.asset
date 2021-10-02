@@ -15,11 +15,11 @@ MonoBehaviour:
   Spread: 1.6
   WeaponStages:
   - RPM: 550
-    InitialSpeed: 50
+    InitialSpeed: 30
     Damage: 1
   - RPM: 600
-    InitialSpeed: 60
+    InitialSpeed: 35
     Damage: 2
   - RPM: 650
-    InitialSpeed: 70
+    InitialSpeed: 40
     Damage: 3

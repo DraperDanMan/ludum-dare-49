@@ -4,6 +4,8 @@ using Utils;
 [DefaultExecutionOrder(-1)]
 public class Player : Entity, IDamagable
 {
+    public static Vector3 Position;
+
     public static FloatEffectorStack PlayerTimeScale;
 
     public CameraRecoil Recoil;

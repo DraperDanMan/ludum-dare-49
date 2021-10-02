@@ -241,9 +241,16 @@ namespace Utils
         {
             lhs.y = 0;
             rhs.y = 0;
-            if (normalize) return (lhs - rhs).normalized;
+            if (normalize) return (rhs - lhs).normalized;
 
-            return (lhs - rhs);
+            return (rhs - lhs);
+        }
+
+        public static Vector3 Direction(this Vector3 lhs, Vector3 rhs, bool normalize = true)
+        {
+            if (normalize) return (rhs - lhs).normalized;
+
+            return (rhs - lhs);
         }
 
         public static float PlanarDistance(this Vector3 from, Vector3 to)

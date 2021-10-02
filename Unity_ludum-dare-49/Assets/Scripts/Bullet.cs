@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Bullet: Entity
 {
-    [SerializeField] private Rigidbody _rigidbody;
 
     private float _initialSpeed;
     private float _timeAdjustedSpeed;
@@ -22,7 +21,8 @@ public class Bullet: Entity
 
     private void SetTimeAdjustedSpeed()
     {
-        _timeAdjustedSpeed = _initialSpeed * CurrentTimeScale;
+        float timeScale = CurrentTimeScale;
+        _timeAdjustedSpeed = _initialSpeed * (timeScale * timeScale ); //bullets should fake slowdown more
         _rigidbody.velocity = transform.forward * _timeAdjustedSpeed;
     }
 
