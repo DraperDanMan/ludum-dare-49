@@ -55,6 +55,7 @@ public class Enemy : Entity, IDamagable
 
     private void Die()
     {
+        PrefabManager.Instance.CreateField(transform.position);
         Destroy(gameObject);
     }
 }

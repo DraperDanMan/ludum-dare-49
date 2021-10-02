@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Utils;
+using Random = UnityEngine.Random;
 
 public class PrefabManager : SingletonBehaviour<PrefabManager>
 {
@@ -9,7 +11,7 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
     public static Transform ActiveBits;
     public static Transform InactiveBits;
 
-    public GameObject WorldImpactPrefab;
+    public List<FieldSpawn> FieldDescriptions = new List<FieldSpawn>();
     public GameObject BulletPrefab;
 
     private Stack<Bullet> _poolBullets = new Stack<Bullet>();
@@ -50,8 +52,25 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
         _poolBullets.Push(bullet);
     }
 
+    public void CreateField(Vector3 position)
+    {
+        var prefabIdx = FieldDescriptions.GetRandomIndex();
+        var fieldSpawn = FieldDescriptions[prefabIdx];
+        var field = Instantiate(fieldSpawn.FieldPrefab, ActiveBits);
+        field.transform.position = position;
+        field.transform.localScale = Vector3.one * Random.Range(fieldSpawn.MinScale, fieldSpawn.MaxScale);
+    }
+
     protected override void Shutdown()
     {
 
+    }
+
+    [Serializable]
+    public class FieldSpawn
+    {
+        public GameObject FieldPrefab;
+        public float MinScale = 1;
+        public float MaxScale = 4;
     }
 }

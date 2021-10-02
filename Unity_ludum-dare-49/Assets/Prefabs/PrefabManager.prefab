@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5559498552769732955}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -43,5 +43,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c76bf871e5df341a9c24d09007d08a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WorldImpactPrefab: {fileID: 0}
+  FieldDescriptions:
+  - FieldPrefab: {fileID: 5830246687644561141, guid: 8d316c5199a695a48b65ea1cb168d3f0, type: 3}
+    MinScale: 2
+    MaxScale: 7
+  - FieldPrefab: {fileID: 5404343138200886612, guid: 7662df7a102e76b4eb0b37bcd744428a, type: 3}
+    MinScale: 2
+    MaxScale: 7
   BulletPrefab: {fileID: 6968393959294547216, guid: 66685fdea4d21e04989ee28f709bf135, type: 3}
