@@ -58,11 +58,9 @@ public class Weapon : MonoBehaviour
         var fireForward = offset * ShotOrigin.forward;
         fireForward = spin * fireForward;
 
-        var bulletPrefab = PrefabManager.Instance.BulletPrefab;
         var bulletRot = Quaternion.LookRotation(fireForward);
-        var bulletGO = Instantiate(bulletPrefab, ShotOrigin.position, bulletRot, PrefabManager.ActiveBits);
-        var bullet = bulletGO.GetComponent<Bullet>();
-        bullet.Init(_weaponData.Stage.InitialSpeed+plyForwardSpeed);
+        var bullet = PrefabManager.Instance.UnpoolBullet(ShotOrigin.position, bulletRot);
+        bullet.Init(_weaponData.Stage.InitialSpeed+plyForwardSpeed, _weaponData.Stage.Damage);
 
         FlashEffect.Emit(1);
     }

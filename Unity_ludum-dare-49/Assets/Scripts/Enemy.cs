@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
-public class Enemy : Entity
+public class Enemy : Entity, IDamagable
 {
-    public int Health = 100;
+    public int Health = 6;
     protected int _maxHealth;
 
     [SerializeField]
@@ -41,5 +41,20 @@ public class Enemy : Entity
         var forwardRot = Quaternion.LookRotation(_visual.forward);
         var toPlaterRot = Quaternion.LookRotation(toPlayerDir);
         _visual.rotation = Quaternion.RotateTowards(forwardRot,toPlaterRot,_timeAdjustedTurnSpeed);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        Health -= damage;
+        //flash and play sound
+        if (Health <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 }

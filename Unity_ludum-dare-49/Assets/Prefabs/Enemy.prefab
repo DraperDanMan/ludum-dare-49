@@ -127,8 +127,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb31c595d5bf8ee459fd6f04dc5863fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 50
   _rigidbody: {fileID: 8981355880417132605}
+  Health: 6
   moveSpeed: 4
   turnSpeed: 90
   _visual: {fileID: 6743720190287404946}

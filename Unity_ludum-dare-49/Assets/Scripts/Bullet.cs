@@ -4,19 +4,31 @@ using UnityEngine;
 
 public class Bullet: Entity
 {
-
     private float _initialSpeed;
+    private int _damage;
     private float _timeAdjustedSpeed;
 
-    public void Init(float initialSpeed)
+
+
+    public void Init(float initialSpeed, int damage)
     {
         _initialSpeed = initialSpeed;
+        _damage = damage;
         SetTimeAdjustedSpeed();
     }
 
     private void FixedUpdate()
     {
         SetTimeAdjustedSpeed();
+        DistanceRepoolCheck();
+    }
+
+    private void DistanceRepoolCheck()
+    {
+        if (_rigidbody.position.sqrMagnitude > PrefabManager.SquareCameraFarPlanceDistance)
+        {
+            PrefabManager.Instance.RepoolBullet(this);
+        }
     }
 
     private void SetTimeAdjustedSpeed()
@@ -28,6 +40,24 @@ public class Bullet: Entity
 
     private void OnCollisionEnter(Collision other)
     {
-        Destroy(gameObject);
+        var rigid = other.rigidbody;
+        if (rigid != null)
+        {
+            var damageable = rigid.GetComponent<IDamagable>();
+            if (damageable != null)
+            {
+                damageable.TakeDamage(_damage);
+            }
+        }
+
+        PrefabManager.Instance.RepoolBullet(this);
+    }
+
+    public void Reset()
+    {
+        _localTimeScale.Clear();
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.rotation = Quaternion.identity;
+        _rigidbody.angularVelocity = Vector3.zero;
     }
 }
