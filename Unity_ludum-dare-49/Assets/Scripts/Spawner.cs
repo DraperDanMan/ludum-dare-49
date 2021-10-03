@@ -40,6 +40,9 @@ public class Spawner : Entity, IDamagable
     private float _moveSpeed = 2f;
     private GameManager.SpawnRef _spawnRef;
 
+    [SerializeField] private AudioClip _animInSound;
+    [SerializeField] private AudioClip _spawnEnemySound;
+
     protected override void Awake()
     {
         _visualStartPos = _visual.localPosition;
@@ -124,6 +127,8 @@ public class Spawner : Entity, IDamagable
         var enemy = enemyGo.GetComponent<Enemy>();
         enemy.SpawnAnim();
         enemy.Rigidbody.AddForce(_spawnLocation.forward*EnemyEjectForce);
+        var ac = PrefabManager.Instance.UnpoolAudioCue();
+        ac.Play(transform.position, _spawnEnemySound);
     }
 
     private IEnumerator SpawnGroupCo()
@@ -153,6 +158,9 @@ public class Spawner : Entity, IDamagable
     private IEnumerator AnimateInCo()
     {
         CurrentSpinSpeed = fastSpinSpeed; //maybe even faster?
+
+        var ac = PrefabManager.Instance.UnpoolAudioCue();
+        ac.Play(transform.position, _animInSound);
 
         while (!_visual.localPosition.ApproximatelyEquals(_visualStartPos, 0.002f))
         {

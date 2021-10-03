@@ -20,6 +20,9 @@ public class Player : Entity, IDamagable
 
     private float _timeScale = 1;
 
+    [SerializeField] private AudioClip _shootSound;
+    [SerializeField] private float _pitchVariance = 0.05f;
+
     protected override void Awake()
     {
         base.Awake();
@@ -47,7 +50,12 @@ public class Player : Entity, IDamagable
 
     public void Shoot(bool firstShot = false)
     {
-        Weapon.Fire(firstShot);
+        if (Weapon.Fire(firstShot))
+        {
+            var ac = PrefabManager.Instance.UnpoolAudioCue();
+            float pitch = 1 + Random.Range(-_pitchVariance, _pitchVariance);
+            ac.Play(Weapon.transform.position, _shootSound, 0.2f, pitch, true);
+        }
     }
 
 
@@ -62,7 +70,7 @@ public class Player : Entity, IDamagable
         Transform respawn = Spawn; //temp respwan at same place
         transform.position = respawn.position;
         transform.rotation = respawn.rotation;
-
+        LocalTimeScale.Clear();
         //do respawn
         //Destroy(gameObject);
     }

@@ -755,6 +755,8 @@ MonoBehaviour:
   Weapon: {fileID: 4790616553501968088}
   Spawn: {fileID: 0}
   DeathHeight: -35
+  _shootSound: {fileID: 8300000, guid: 570f3b844072d2941a2a4dedcb765de4, type: 3}
+  _pitchVariance: 0.02
 --- !u!114 &6846578686483508304
 MonoBehaviour:
   m_ObjectHideFlags: 0

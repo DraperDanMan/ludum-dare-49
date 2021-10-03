@@ -53,3 +53,4 @@ MonoBehaviour:
   BulletPrefab: {fileID: 6968393959294547216, guid: 66685fdea4d21e04989ee28f709bf135, type: 3}
   EnemyPrefab: {fileID: 3674771399744699965, guid: 3cafc9ea27e47d649bedfd9b884fca09, type: 3}
   SpawnerPrefab: {fileID: 8938265371783632112, guid: 831869266bdca284097327c6b3038b54, type: 3}
+  AudioCuePrefab: {fileID: 9149808932906221381, guid: 61604bf6657eb82418ef584cb4efb2f4, type: 3}

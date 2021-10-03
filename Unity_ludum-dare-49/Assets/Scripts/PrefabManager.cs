@@ -17,8 +17,13 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
     public GameObject EnemyPrefab;
     public GameObject SpawnerPrefab;
 
+    public GameObject AudioCuePrefab;
+
     private readonly List<Bullet> _allBullets = new List<Bullet>();
     private readonly Stack<Bullet> _poolBullets = new Stack<Bullet>();
+
+    private readonly List<AudioCue> _allAudioCues = new List<AudioCue>();
+    private readonly Stack<AudioCue> _poolAudioCues = new Stack<AudioCue>();
 
     protected override void Initialize()
     {
@@ -26,6 +31,7 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
         InactiveBits = new GameObject("InactiveBits").transform;
         CreateTempBits();
         CreateBullets(200);
+        CreateAudios(80);
         SquareCameraFarPlanceDistance = Camera.main.farClipPlane.Squared();
     }
 
@@ -75,11 +81,45 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
         field.transform.localScale = Vector3.one * Random.Range(fieldSpawn.MinScale, fieldSpawn.MaxScale);
     }
 
+    private void CreateAudios(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            var audioGO = Instantiate(AudioCuePrefab, Vector3.zero, Quaternion.identity, ActiveBits);
+            var ac = audioGO.GetComponent<AudioCue>();
+            _allAudioCues.Add(ac);
+            RepoolAudioCue(ac);
+        }
+    }
+
+    public AudioCue UnpoolAudioCue()
+    {
+        if (_poolAudioCues.Count <= 0) CreateAudios(1);
+        var ac = _poolAudioCues.Pop();
+        ac.transform.parent = ActiveBits;
+        ac.gameObject.SetActive(true);
+        ac.InPool = false;
+        return ac;
+    }
+
+    public void RepoolAudioCue(AudioCue ac)
+    {
+        ac.Reset();
+        ac.InPool = true;
+        ac.gameObject.SetActive(false);
+        ac.transform.parent = InactiveBits;
+        _poolAudioCues.Push(ac);
+    }
+
     public void Reset()
     {
         foreach (var bullet in _allBullets)
         {
             if (!bullet.InPool) RepoolBullet(bullet);
+        }
+        foreach (var cue in _allAudioCues)
+        {
+            if (!cue.InPool) RepoolAudioCue(cue);
         }
         CreateTempBits();
     }
