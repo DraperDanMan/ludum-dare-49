@@ -37,13 +37,15 @@ public class Spawner : Entity, IDamagable
     private float _timeAdjustedAliveTime = 0;
 
     private Vector3 _endDestination;
-    private float _moveSpeed = 2f;
+    private float _moveSpeed = 0.25f;
     private GameManager.SpawnRef _spawnRef;
 
     [SerializeField] private AudioClip _animInSound;
     [SerializeField] private AudioClip _spawnEnemySound;
 
-    protected override void Awake()
+    private Coroutine _runningCo;
+
+    protected void Awake()
     {
         _visualStartPos = _visual.localPosition;
         _visual.localPosition += Vector3.down * 5;
@@ -52,7 +54,7 @@ public class Spawner : Entity, IDamagable
 
     private void Start()
     {
-        StartCoroutine(AnimateInCo());
+        _runningCo = StartCoroutine(AnimateInCo());
     }
 
     public void SetDestination(GameManager.SpawnRef spawnRef)
@@ -66,7 +68,7 @@ public class Spawner : Entity, IDamagable
         float deltaTime = Time.deltaTime * CurrentTimeScale;
         if (_timeAdjustedAliveTime >= _nextGroupTime)
         {
-            StartCoroutine(SpawnGroupCo());
+            _runningCo = StartCoroutine(SpawnGroupCo());
         }
 
         _timeAdjustedAliveTime += deltaTime;
@@ -113,10 +115,12 @@ public class Spawner : Entity, IDamagable
 
     private void Die()
     {
+        GameManager.Kills++;
         PrefabManager.Instance.CreateField(transform.position);
         if (Active)
             _spawnRef.SpawnLayer.SetSlotClear(_spawnRef.SpawnSlot);
         _spawnRef.DestinationLayer.SetSlotClear(_spawnRef.DestinationSlot);
+        if (_runningCo != null) StopCoroutine(_runningCo);
         Destroy(gameObject);
     }
 
@@ -153,6 +157,7 @@ public class Spawner : Entity, IDamagable
 
         _nextGroupTime = _timeAdjustedAliveTime + TimeBetweenGroups;
         CurrentSpinSpeed = idleSpinSpeed;
+        _runningCo = null;
     }
 
     private IEnumerator AnimateInCo()
@@ -173,5 +178,6 @@ public class Spawner : Entity, IDamagable
         _nextGroupTime = _timeAdjustedAliveTime + TimeBeforeInitialGroup;
         CurrentSpinSpeed = idleSpinSpeed;
         Active = true;
+        _runningCo = null;
     }
 }

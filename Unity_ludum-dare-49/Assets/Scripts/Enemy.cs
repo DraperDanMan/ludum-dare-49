@@ -22,7 +22,9 @@ public class Enemy : Entity, IDamagable
     private Vector3 _startScale;
     private Vector3 _visualVel;
 
-    protected virtual void Awake()
+    private Coroutine _animCo;
+
+    protected void Awake()
     {
         _maxHealth = Health;
         _startScale = _visual.localScale;
@@ -36,9 +38,14 @@ public class Enemy : Entity, IDamagable
     private void SetTimeAdjustedSpeed()
     {
         float deltaTime = Time.fixedDeltaTime;
+
+        bool outOfView = OutOfView();
+        var tweakTurnSpeed = outOfView ? turnSpeed * 1.25f : turnSpeed;
+        var tweakMoveSpeed = outOfView ? moveSpeed * 1.10f : moveSpeed;
+
         var toPlayerDir = transform.position.Direction(Player.Position);
-        _timeAdjustedSpeed = moveSpeed * deltaTime * CurrentTimeScale;
-        _timeAdjustedTurnSpeed = turnSpeed * deltaTime * CurrentTimeScale;
+        _timeAdjustedSpeed = tweakMoveSpeed * deltaTime * CurrentTimeScale;
+        _timeAdjustedTurnSpeed = tweakTurnSpeed * deltaTime * CurrentTimeScale;
 
         _rigidbody.velocity = _visual.forward * _timeAdjustedSpeed;
 
@@ -59,6 +66,8 @@ public class Enemy : Entity, IDamagable
 
     private void Die()
     {
+        GameManager.Kills++;
+        if (_animCo != null) StopCoroutine(_animCo);
         Destroy(gameObject);
     }
 
@@ -78,7 +87,7 @@ public class Enemy : Entity, IDamagable
     public void SpawnAnim()
     {
         _visual.localScale = Vector3.one * 0.1f;
-        StartCoroutine(SpawnAnimCo());
+        _animCo = StartCoroutine(SpawnAnimCo());
     }
 
     private IEnumerator SpawnAnimCo()
@@ -90,6 +99,15 @@ public class Enemy : Entity, IDamagable
                 ref _visualVel,0.15f, 5f,timeAdjustedDeltaTime);
             yield return null;
         }
+
+        _animCo = null;
+    }
+
+    public bool OutOfView()
+    {
+        var screenPoint = Player.Cam.WorldToViewportPoint(transform.position, Camera.MonoOrStereoscopicEye.Mono);
+        return screenPoint.z < 0 && screenPoint.x < 0.1f || screenPoint.x > 0.9f && screenPoint.y < 0.1f ||
+               screenPoint.y > 0.9f;
     }
 
 }

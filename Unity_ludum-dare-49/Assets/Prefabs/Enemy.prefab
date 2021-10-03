@@ -224,7 +224,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 8981355880417132605}
   Health: 2
-  moveSpeed: 140
+  moveSpeed: 180
   turnSpeed: 35
   _visual: {fileID: 4853826992347613277}
 --- !u!54 &8981355880417132605

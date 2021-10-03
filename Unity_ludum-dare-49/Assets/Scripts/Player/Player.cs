@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Utils;
+using Random = UnityEngine.Random;
 
 [DefaultExecutionOrder(-1)]
 public class Player : Entity, IDamagable
 {
     public static Vector3 Position;
+    public static Camera Cam;
 
     public static FloatEffectorStack PlayerTimeScale;
 
@@ -23,9 +26,9 @@ public class Player : Entity, IDamagable
     [SerializeField] private AudioClip _shootSound;
     [SerializeField] private float _pitchVariance = 0.05f;
 
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
+        Cam = Camera;
         PlayerTimeScale = LocalTimeScale; //give a copy of our local time to the static field
     }
 
@@ -34,6 +37,7 @@ public class Player : Entity, IDamagable
         _timeScale = PlayerTimeScale.Value;
         PlayerActionInput();
         HeightDieCheck();
+        Weapon.Data.CheckStage(GameManager.Kills);
     }
 
     private void PlayerActionInput()
@@ -45,6 +49,18 @@ public class Player : Entity, IDamagable
         else if (Input.GetButton("Fire1"))
         {
             Shoot();
+        }
+
+        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
+        {
+            GameManager.Instance.Stop();
+            GameManager.Instance.SetBestScore(0);
+            GameManager.Instance.Reset();
+        }
+        else if (Input.GetKeyDown(KeyCode.R))
+        {
+            GameManager.Instance.Stop();
+            GameManager.Instance.Reset();
         }
     }
 
@@ -66,13 +82,18 @@ public class Player : Entity, IDamagable
 
     public void Die()
     {
-        GameManager.Instance.Reset();
+        GameManager.Instance.Stop();
+        //do respawn
+        //Destroy(gameObject);
+    }
+
+    public void Reset()
+    {
         Transform respawn = Spawn; //temp respwan at same place
         transform.position = respawn.position;
         transform.rotation = respawn.rotation;
         LocalTimeScale.Clear();
-        //do respawn
-        //Destroy(gameObject);
+        Weapon.Data.Reset();
     }
 
     private void HeightDieCheck()

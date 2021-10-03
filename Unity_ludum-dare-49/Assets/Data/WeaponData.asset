@@ -17,9 +17,30 @@ MonoBehaviour:
   - RPM: 550
     InitialSpeed: 30
     Damage: 1
+    KillRequirement: 0
+    KillColorMotif: {r: 0.8584906, g: 0.8418642, b: 0.28751338, a: 1}
   - RPM: 600
     InitialSpeed: 35
     Damage: 2
+    KillRequirement: 15
+    KillColorMotif: {r: 0.85882354, g: 0.6806602, b: 0.28627455, a: 1}
   - RPM: 650
     InitialSpeed: 40
+    Damage: 2
+    KillRequirement: 50
+    KillColorMotif: {r: 0.85882354, g: 0.55652934, b: 0.28627455, a: 1}
+  - RPM: 700
+    InitialSpeed: 40
     Damage: 3
+    KillRequirement: 100
+    KillColorMotif: {r: 0.85882354, g: 0.35757202, b: 0.28627455, a: 1}
+  - RPM: 900
+    InitialSpeed: 42
+    Damage: 3
+    KillRequirement: 200
+    KillColorMotif: {r: 0.8490566, g: 0.18823424, b: 0.19498505, a: 1}
+  - RPM: 1200
+    InitialSpeed: 42
+    Damage: 3
+    KillRequirement: 500
+    KillColorMotif: {r: 0.8962264, g: 0.12259703, b: 0.5944395, a: 1}

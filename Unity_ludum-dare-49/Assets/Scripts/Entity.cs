@@ -32,16 +32,4 @@ public class Entity : MonoBehaviour
 
     [SerializeField] protected Rigidbody _rigidbody;
 
-    protected virtual void Awake()
-    {
-
-    }
-
-    protected virtual void OnDestroy()
-    {
-
-    }
-
-
-
 }

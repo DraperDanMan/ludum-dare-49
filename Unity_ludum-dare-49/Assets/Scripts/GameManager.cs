@@ -8,10 +8,20 @@ using Random = UnityEngine.Random;
 using UnityEditor;
 #endif
 
+[DefaultExecutionOrder(-2)]
 public class GameManager : SingletonBehaviour<GameManager>
 {
+    private const string HighScoreKey = "BEST_TIME";
+
+    public static float BestTime { get; private set; }
+
+    public static int Kills;
+    public static float GameTime;
+
     public static GameState State => Instance._gameState.CurrentState;
     private readonly StateMachine<GameState> _gameState = new StateMachine<GameState>(true);
+
+    [SerializeField] private Player _player;
 
     [SerializeField]
     private List<SpawnerLayer> _spawnerLayers = new List<SpawnerLayer>();
@@ -23,11 +33,12 @@ public class GameManager : SingletonBehaviour<GameManager>
     private List<SpawnTimeline> _spawnTimeline = new List<SpawnTimeline>();
 
     private int _timelineIdx = 0;
-    private float GameTime = 0;
+
+    private bool isRunning = false;
 
     protected override void Initialize()
     {
-
+        BestTime = PlayerPrefs.GetFloat(HighScoreKey, 0);
     }
 
     protected override void Shutdown()
@@ -38,15 +49,21 @@ public class GameManager : SingletonBehaviour<GameManager>
     private void Start()
     {
         Reset();
+        HUD.Instance.SetBestTime(BestTime);
     }
 
     private void Update()
     {
-        GameTime += Time.deltaTime;
-        if (_timelineIdx < _spawnTimeline.Count && GameTime >= _spawnTimeline[_timelineIdx].Time)
+        if (isRunning)
         {
-            SpawnSpawner();
-            _timelineIdx++;
+            GameTime += Time.deltaTime;
+            if (_timelineIdx < _spawnTimeline.Count && GameTime >= _spawnTimeline[_timelineIdx].Time)
+            {
+                SpawnSpawner();
+                _timelineIdx++;
+            }
+
+            HUD.Instance.SetTimeAndKills(GameTime, Kills);
         }
     }
 
@@ -68,7 +85,6 @@ public class GameManager : SingletonBehaviour<GameManager>
         var spawnRef = new SpawnRef();
 
         var outerLayer = _spawnerLayers.GetLastOrDefault();
-        SpawnerLayer targetLayer = null;
         foreach (var layer in _spawnerLayers)
         {
             if (layer.IsFull) continue;
@@ -106,16 +122,33 @@ public class GameManager : SingletonBehaviour<GameManager>
         return spawnRef;
     }
 
+    public void Stop()
+    {
+        isRunning = false;
+        SetBestScore(GameTime);
+    }
+
+    public void SetBestScore(float time)
+    {
+        BestTime = time;
+        PlayerPrefs.SetFloat(HighScoreKey, BestTime);
+        HUD.Instance.SetBestTime(BestTime);
+    }
+
     public void Reset()
     {
+        _player.Reset();
         PrefabManager.Instance.Reset();
         GameTime = 0;
+        Kills = 0;
         _timelineIdx = 0;
+        isRunning = true;
+        HUD.Instance.SetTimeAndKills(0, 0);
     }
 
     public bool OutOfView(Vector3 worldPosition)
     {
-        var screenPoint = Camera.main.WorldToViewportPoint(worldPosition, Camera.MonoOrStereoscopicEye.Mono);
+        var screenPoint = Player.Cam.WorldToViewportPoint(worldPosition, Camera.MonoOrStereoscopicEye.Mono);
         return screenPoint.z < 0 && screenPoint.x < 0.1f || screenPoint.x > 0.9f && screenPoint.y < 0.1f ||
                screenPoint.y > 0.9f;
     }

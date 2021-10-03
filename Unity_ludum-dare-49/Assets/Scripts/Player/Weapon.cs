@@ -21,6 +21,7 @@ public class Weapon : MonoBehaviour
 
     public ParticleSystem FlashEffect;
 
+    public WeaponData Data => _weaponData;
     [SerializeField] private WeaponData _weaponData;
 
     public Action<int, Vector3> OnDealDamage;
