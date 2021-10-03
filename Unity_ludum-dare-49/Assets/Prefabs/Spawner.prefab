@@ -5131,7 +5131,7 @@ MonoBehaviour:
   _visual: {fileID: 8125581686999385724}
   _spawnLocation: {fileID: 838803403038337980}
   _groundSpawnParticle: {fileID: 7721041897555747647}
-  TimeBeforeInitialGroup: 8
+  TimeBeforeInitialGroup: 3
   NumberToSpawn: 8
   TimeBetweenEnemies: 0.25
   EnemyEjectForce: 15

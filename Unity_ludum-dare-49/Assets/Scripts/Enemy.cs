@@ -83,7 +83,7 @@ public class Enemy : Entity, IDamagable
 
     private IEnumerator SpawnAnimCo()
     {
-        while (!_visual.localScale.ApproximatelyEquals(_startScale))
+        while (!_visual.localScale.ApproximatelyEquals(_startScale, 0.002f))
         {
             float timeAdjustedDeltaTime = Time.deltaTime * CurrentTimeScale;
             _visual.localScale = Vector3.SmoothDamp(_visual.localScale,_startScale,

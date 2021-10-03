@@ -10,6 +10,8 @@ public class Spawner : Entity, IDamagable
     public int Health = 6;
     protected int _maxHealth;
 
+    public bool Active { get; set; }
+
     public float idleSpinSpeed = 45;
     public float fastSpinSpeed = 90;
 
@@ -34,6 +36,10 @@ public class Spawner : Entity, IDamagable
 
     private float _timeAdjustedAliveTime = 0;
 
+    private Vector3 _endDestination;
+    private float _moveSpeed = 2f;
+    private GameManager.SpawnRef _spawnRef;
+
     protected override void Awake()
     {
         _visualStartPos = _visual.localPosition;
@@ -44,6 +50,12 @@ public class Spawner : Entity, IDamagable
     private void Start()
     {
         StartCoroutine(AnimateInCo());
+    }
+
+    public void SetDestination(GameManager.SpawnRef spawnRef)
+    {
+        _spawnRef = spawnRef;
+        _endDestination = _spawnRef.DestinationLayer.GetSlot(_spawnRef.DestinationSlot,Vector3.zero);
     }
 
     private void Update()
@@ -61,6 +73,29 @@ public class Spawner : Entity, IDamagable
         float deltaTime = Time.fixedDeltaTime;
         _timeAdjustedTurnSpeed = CurrentSpinSpeed * deltaTime * CurrentTimeScale;
         transform.Rotate(transform.up,_timeAdjustedTurnSpeed);
+        if (Active)
+        {
+            var timeAdjustedSpeed = _moveSpeed * deltaTime * CurrentTimeScale;
+            transform.position = Vector3.MoveTowards(transform.position, _endDestination, timeAdjustedSpeed);
+            if (transform.position.ApproximatelyEquals(_endDestination, 0.002f))
+            {
+                Active = false;
+                _spawnRef.SpawnLayer.SetSlotClear(_spawnRef.SpawnSlot);
+            }
+        }
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        var rigid = other.rigidbody;
+        if (rigid != null && other.gameObject.layer == 6)
+        {
+            var damagable = rigid.GetComponent<IDamagable>();
+            if (damagable != null)
+            {
+                damagable.TakeDamage(1);
+            }
+        }
     }
 
     public void TakeDamage(int damage)
@@ -76,6 +111,9 @@ public class Spawner : Entity, IDamagable
     private void Die()
     {
         PrefabManager.Instance.CreateField(transform.position);
+        if (Active)
+            _spawnRef.SpawnLayer.SetSlotClear(_spawnRef.SpawnSlot);
+        _spawnRef.DestinationLayer.SetSlotClear(_spawnRef.DestinationSlot);
         Destroy(gameObject);
     }
 
@@ -116,7 +154,7 @@ public class Spawner : Entity, IDamagable
     {
         CurrentSpinSpeed = fastSpinSpeed; //maybe even faster?
 
-        while (!_visual.localPosition.ApproximatelyEquals(_visualStartPos))
+        while (!_visual.localPosition.ApproximatelyEquals(_visualStartPos, 0.002f))
         {
             float timeAdjustedDeltaTime = Time.deltaTime * CurrentTimeScale;
             _visual.localPosition = Vector3.SmoothDamp(_visual.localPosition,_visualStartPos,
@@ -126,5 +164,6 @@ public class Spawner : Entity, IDamagable
         _groundSpawnParticle.Stop(true,ParticleSystemStopBehavior.StopEmitting);
         _nextGroupTime = _timeAdjustedAliveTime + TimeBeforeInitialGroup;
         CurrentSpinSpeed = idleSpinSpeed;
+        Active = true;
     }
 }

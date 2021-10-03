@@ -7,6 +7,8 @@ public class Weapon : MonoBehaviour
     [SerializeField]
     private Player _owner;
 
+    private float _scaledPlayerTime = 0;
+
     public Transform ShotOrigin;
 
     private float _nextShot = 1;
@@ -32,14 +34,15 @@ public class Weapon : MonoBehaviour
 
     private void Update()
     {
+        _scaledPlayerTime += Time.deltaTime * _owner.CurrentTimeScale;
         transform.localPosition = _gunStartPos + _gunRecoil;
         _gunRecoil = Vector3.Lerp(_gunRecoil, Vector3.zero, Time.deltaTime * 10f);
     }
 
     public bool Fire(bool firstShot = false)
     {
-        if (_lastShotTime + _nextShot > Time.time) return false;
-        _lastShotTime = Time.time;
+        if (_lastShotTime + _nextShot > _scaledPlayerTime) return false;
+        _lastShotTime = _scaledPlayerTime;
         _owner.Recoil.DoPunch(Vector3.up * Random.Range(-0.05f, 0.06f) * 5f);
         _nextShot = 1 / (_weaponData.Stage.RPM / 60);
         _gunRecoil = Vector3.forward * (Random.Range(-0.2f, -0.05f));

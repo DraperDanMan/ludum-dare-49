@@ -45,9 +45,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldDescriptions:
   - FieldPrefab: {fileID: 5830246687644561141, guid: 8d316c5199a695a48b65ea1cb168d3f0, type: 3}
-    MinScale: 2
-    MaxScale: 7
+    MinScale: 5
+    MaxScale: 14
   - FieldPrefab: {fileID: 5404343138200886612, guid: 7662df7a102e76b4eb0b37bcd744428a, type: 3}
-    MinScale: 2
-    MaxScale: 7
+    MinScale: 5
+    MaxScale: 10
   BulletPrefab: {fileID: 6968393959294547216, guid: 66685fdea4d21e04989ee28f709bf135, type: 3}
+  EnemyPrefab: {fileID: 3674771399744699965, guid: 3cafc9ea27e47d649bedfd9b884fca09, type: 3}
+  SpawnerPrefab: {fileID: 8938265371783632112, guid: 831869266bdca284097327c6b3038b54, type: 3}

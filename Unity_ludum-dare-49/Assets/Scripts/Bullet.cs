@@ -36,14 +36,14 @@ public class Bullet: Entity
     private void SetTimeAdjustedSpeed()
     {
         float timeScale = CurrentTimeScale;
-        _timeAdjustedSpeed = _initialSpeed * (timeScale * timeScale ); //bullets should fake slowdown more
+        _timeAdjustedSpeed = _initialSpeed * (timeScale < 1 ? (timeScale * timeScale ) : timeScale); //bullets should fake slowdown more
         _rigidbody.velocity = transform.forward * _timeAdjustedSpeed;
     }
 
     private void OnCollisionEnter(Collision other)
     {
         var rigid = other.rigidbody;
-        if (rigid != null && other.gameObject.layer != 0)
+        if (rigid != null && other.collider.gameObject.layer != 0)
         {
             var damageable = rigid.GetComponent<IDamagable>();
             if (damageable != null)

@@ -75,5 +75,4 @@ public class Player : Entity, IDamagable
         }
     }
 
-
 }
