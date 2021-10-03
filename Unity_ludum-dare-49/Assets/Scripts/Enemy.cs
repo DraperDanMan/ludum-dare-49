@@ -18,10 +18,13 @@ public class Enemy : Entity, IDamagable
     private float _timeAdjustedTurnSpeed;
 
     [SerializeField] private Transform _visual;
+    private Vector3 _startScale;
+    private Vector3 _visualVel;
 
     protected virtual void Awake()
     {
         _maxHealth = Health;
+        _startScale = _visual.localScale;
     }
 
     private void FixedUpdate()
@@ -58,4 +61,22 @@ public class Enemy : Entity, IDamagable
         PrefabManager.Instance.CreateField(transform.position);
         Destroy(gameObject);
     }
+
+    public void SpawnAnim()
+    {
+        _visual.localScale = Vector3.one * 0.1f;
+        StartCoroutine(SpawnAnimCo());
+    }
+
+    private IEnumerator SpawnAnimCo()
+    {
+        while (!_visual.localScale.ApproximatelyEquals(_startScale))
+        {
+            float timeAdjustedDeltaTime = Time.deltaTime * CurrentTimeScale;
+            _visual.localScale = Vector3.SmoothDamp(_visual.localScale,_startScale,
+                ref _visualVel,0.15f, 0.5f,timeAdjustedDeltaTime);
+            yield return null;
+        }
+    }
+
 }

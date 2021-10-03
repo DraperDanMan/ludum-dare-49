@@ -28,6 +28,8 @@ public class Entity : MonoBehaviour
 
     protected float CurrentTimeScale => _localTimeScale.Value;// + GameTimeScaleOffset;
 
+    public Rigidbody Rigidbody => _rigidbody;
+
     [SerializeField] protected Rigidbody _rigidbody;
 
     protected virtual void Awake()

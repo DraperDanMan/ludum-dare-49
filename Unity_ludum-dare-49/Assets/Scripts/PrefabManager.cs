@@ -13,8 +13,9 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
 
     public List<FieldSpawn> FieldDescriptions = new List<FieldSpawn>();
     public GameObject BulletPrefab;
+    public GameObject EnemyPrefab;
 
-    private Stack<Bullet> _poolBullets = new Stack<Bullet>();
+    private readonly Stack<Bullet> _poolBullets = new Stack<Bullet>();
 
     protected override void Initialize()
     {
