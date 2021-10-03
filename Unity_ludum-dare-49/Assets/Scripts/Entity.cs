@@ -26,7 +26,7 @@ public class Entity : MonoBehaviour
     public FloatEffectorStack LocalTimeScale => _localTimeScale;
     protected FloatEffectorStack _localTimeScale = new FloatEffectorStack(FloatEffectorStack.RoughAverage, 1);
 
-    protected float CurrentTimeScale => _localTimeScale.Value;// + GameTimeScaleOffset;
+    public float CurrentTimeScale => _localTimeScale.Value;// + GameTimeScaleOffset;
 
     public Rigidbody Rigidbody => _rigidbody;
 

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Bullet: Entity
 {
+    public bool InPool { get; set; }
+
     private float _initialSpeed;
     private int _damage;
     private float _timeAdjustedSpeed;
@@ -41,7 +43,7 @@ public class Bullet: Entity
     private void OnCollisionEnter(Collision other)
     {
         var rigid = other.rigidbody;
-        if (rigid != null)
+        if (rigid != null && other.gameObject.layer != 0)
         {
             var damageable = rigid.GetComponent<IDamagable>();
             if (damageable != null)

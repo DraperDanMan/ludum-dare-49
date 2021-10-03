@@ -5,8 +5,11 @@ using UnityEngine;
 using UnityEngine.PlayerLoop;
 using Utils;
 
-public class Spawner : Entity
+public class Spawner : Entity, IDamagable
 {
+    public int Health = 6;
+    protected int _maxHealth;
+
     public float idleSpinSpeed = 45;
     public float fastSpinSpeed = 90;
 
@@ -60,10 +63,26 @@ public class Spawner : Entity
         transform.Rotate(transform.up,_timeAdjustedTurnSpeed);
     }
 
+    public void TakeDamage(int damage)
+    {
+        Health -= damage;
+        //flash and play sound
+        if (Health <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        PrefabManager.Instance.CreateField(transform.position);
+        Destroy(gameObject);
+    }
+
     private void SpawnEnemy()
     {
         var enemyGo = Instantiate(PrefabManager.Instance.EnemyPrefab,
-                                _spawnLocation.position, _spawnLocation.rotation, PrefabManager.ActiveBits);
+                                _spawnLocation.position, _spawnLocation.rotation, PrefabManager.TempBits);
         var enemy = enemyGo.GetComponent<Enemy>();
         enemy.SpawnAnim();
         enemy.Rigidbody.AddForce(_spawnLocation.forward*EnemyEjectForce);
@@ -101,7 +120,7 @@ public class Spawner : Entity
         {
             float timeAdjustedDeltaTime = Time.deltaTime * CurrentTimeScale;
             _visual.localPosition = Vector3.SmoothDamp(_visual.localPosition,_visualStartPos,
-                        ref _visualVel,0.75f, 2,timeAdjustedDeltaTime);
+                        ref _visualVel,0.45f, 8,timeAdjustedDeltaTime);
             yield return null;
         }
         _groundSpawnParticle.Stop(true,ParticleSystemStopBehavior.StopEmitting);

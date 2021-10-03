@@ -15,6 +15,9 @@ public class Player : Entity, IDamagable
 
     public Weapon Weapon;
 
+    public Transform Spawn;
+    public float DeathHeight = -10;
+
     private float _timeScale = 1;
 
     protected override void Awake()
@@ -27,6 +30,7 @@ public class Player : Entity, IDamagable
     {
         _timeScale = PlayerTimeScale.Value;
         PlayerActionInput();
+        HeightDieCheck();
     }
 
     private void PlayerActionInput()
@@ -54,12 +58,21 @@ public class Player : Entity, IDamagable
 
     public void Die()
     {
-        Transform respawn = transform; //temp respwan at same place
+        GameManager.Instance.Reset();
+        Transform respawn = Spawn; //temp respwan at same place
         transform.position = respawn.position;
         transform.rotation = respawn.rotation;
 
         //do respawn
         //Destroy(gameObject);
+    }
+
+    private void HeightDieCheck()
+    {
+        if (_rigidbody.position.y < DeathHeight)
+        {
+            Die();
+        }
     }
 
 

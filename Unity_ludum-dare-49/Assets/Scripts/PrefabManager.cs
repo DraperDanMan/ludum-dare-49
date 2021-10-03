@@ -8,21 +8,31 @@ using Random = UnityEngine.Random;
 public class PrefabManager : SingletonBehaviour<PrefabManager>
 {
     public static float SquareCameraFarPlanceDistance;
+    public static Transform TempBits;
     public static Transform ActiveBits;
     public static Transform InactiveBits;
 
     public List<FieldSpawn> FieldDescriptions = new List<FieldSpawn>();
     public GameObject BulletPrefab;
     public GameObject EnemyPrefab;
+    public GameObject SpawnerPrefab;
 
+    private readonly List<Bullet> _allBullets = new List<Bullet>();
     private readonly Stack<Bullet> _poolBullets = new Stack<Bullet>();
 
     protected override void Initialize()
     {
         ActiveBits = transform;
         InactiveBits = new GameObject("InactiveBits").transform;
+        CreateTempBits();
         CreateBullets(200);
         SquareCameraFarPlanceDistance = Camera.main.farClipPlane.Squared();
+    }
+
+    private void CreateTempBits()
+    {
+        if (TempBits != null) Destroy(TempBits.gameObject);
+        TempBits = new GameObject("TempBits").transform;
     }
 
     private void CreateBullets(int count)
@@ -31,6 +41,7 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
         {
             var bulletGO = Instantiate(BulletPrefab, Vector3.zero, Quaternion.identity, ActiveBits);
             var bullet = bulletGO.GetComponent<Bullet>();
+            _allBullets.Add(bullet);
             RepoolBullet(bullet);
         }
     }
@@ -42,12 +53,14 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
         bullet.transform.parent = ActiveBits;
         bullet.transform.SetPositionAndRotation(position,rotation);
         bullet.gameObject.SetActive(true);
+        bullet.InPool = false;
         return bullet;
     }
 
     public void RepoolBullet(Bullet bullet)
     {
         bullet.Reset();
+        bullet.InPool = true;
         bullet.gameObject.SetActive(false);
         bullet.transform.parent = InactiveBits;
         _poolBullets.Push(bullet);
@@ -60,6 +73,15 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
         var field = Instantiate(fieldSpawn.FieldPrefab, ActiveBits);
         field.transform.position = position;
         field.transform.localScale = Vector3.one * Random.Range(fieldSpawn.MinScale, fieldSpawn.MaxScale);
+    }
+
+    public void Reset()
+    {
+        foreach (var bullet in _allBullets)
+        {
+            if (!bullet.InPool) RepoolBullet(bullet);
+        }
+        CreateTempBits();
     }
 
     protected override void Shutdown()

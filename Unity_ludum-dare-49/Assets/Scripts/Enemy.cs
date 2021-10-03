@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -58,8 +59,20 @@ public class Enemy : Entity, IDamagable
 
     private void Die()
     {
-        PrefabManager.Instance.CreateField(transform.position);
         Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        var rigid = other.rigidbody;
+        if (rigid != null && other.gameObject.layer == 6)
+        {
+            var damagable = rigid.GetComponent<IDamagable>();
+            if (damagable != null)
+            {
+                damagable.TakeDamage(1);
+            }
+        }
     }
 
     public void SpawnAnim()
@@ -74,7 +87,7 @@ public class Enemy : Entity, IDamagable
         {
             float timeAdjustedDeltaTime = Time.deltaTime * CurrentTimeScale;
             _visual.localScale = Vector3.SmoothDamp(_visual.localScale,_startScale,
-                ref _visualVel,0.15f, 0.5f,timeAdjustedDeltaTime);
+                ref _visualVel,0.15f, 5f,timeAdjustedDeltaTime);
             yield return null;
         }
     }
