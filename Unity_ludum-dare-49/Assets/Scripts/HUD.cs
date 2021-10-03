@@ -12,6 +12,7 @@ public class HUD : SingletonBehaviour<HUD>
     [SerializeField] private TextMeshProUGUI _bestTimeText;
     [SerializeField] private TextMeshProUGUI _timeText;
     [SerializeField] private TextMeshProUGUI _killsText;
+    [SerializeField] private GameObject _resetText;
     [SerializeField] private Image _killsIcon;
 
     protected override void Initialize()
@@ -39,5 +40,10 @@ public class HUD : SingletonBehaviour<HUD>
     private void ApplyKillIconColor()
     {
         _killsIcon.color = _weaponData.Stage.KillColorMotif;
+    }
+
+    public void ToggleReset(bool enable)
+    {
+        _resetText.gameObject.SetActive(enable);
     }
 }

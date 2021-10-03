@@ -126,6 +126,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     {
         isRunning = false;
         SetBestScore(GameTime);
+        HUD.Instance.ToggleReset(true);
     }
 
     public void SetBestScore(float time)
@@ -144,6 +145,7 @@ public class GameManager : SingletonBehaviour<GameManager>
         _timelineIdx = 0;
         isRunning = true;
         HUD.Instance.SetTimeAndKills(0, 0);
+        HUD.Instance.ToggleReset(false);
     }
 
     public bool OutOfView(Vector3 worldPosition)

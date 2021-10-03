@@ -699,6 +699,64 @@ MonoBehaviour:
   ShotOrigin: {fileID: 4799044722119153670}
   FlashEffect: {fileID: 6255699899986132088}
   _weaponData: {fileID: 11400000, guid: 0d294bf27bedf7b49ba5af583f5aa855, type: 2}
+--- !u!1 &2825536238963012259
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5987496929999690281}
+  - component: {fileID: 283029021458192529}
+  m_Layer: 6
+  m_Name: MusicManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5987496929999690281
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2825536238963012259}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5716876241060528894}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &283029021458192529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2825536238963012259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 530b3a5748e738d4cb308fea2cee35af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _owner: {fileID: 7141497640375911339}
+  BaseLayer:
+    Source: {fileID: 0}
+    track: {fileID: 8300000, guid: 7f261e6e9f6e69947aba0eb6e3aa9ac0, type: 3}
+    EnemyCount: 0
+  _musicLayers:
+  - Source: {fileID: 0}
+    track: {fileID: 8300000, guid: cbfa35eddd229714bb82d430d4b524da, type: 3}
+    EnemyCount: 10
+  - Source: {fileID: 0}
+    track: {fileID: 8300000, guid: 9c8491152b82c9c4fa09a7fa4e0a2c5a, type: 3}
+    EnemyCount: 40
+  - Source: {fileID: 0}
+    track: {fileID: 8300000, guid: 651ce6788a49aab4dabc5302a51529be, type: 3}
+    EnemyCount: 80
 --- !u!1 &3475940191575155890
 GameObject:
   m_ObjectHideFlags: 0
@@ -733,6 +791,8 @@ Transform:
   - {fileID: 8110967087686863029}
   - {fileID: 385097350251733128}
   - {fileID: 1960595927}
+  - {fileID: 7397476615467242943}
+  - {fileID: 5987496929999690281}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -755,6 +815,7 @@ MonoBehaviour:
   Weapon: {fileID: 4790616553501968088}
   Spawn: {fileID: 0}
   DeathHeight: -35
+  _deathCam: {fileID: 7397476615467242943}
   _shootSound: {fileID: 8300000, guid: 570f3b844072d2941a2a4dedcb765de4, type: 3}
   _pitchVariance: 0.02
 --- !u!114 &6846578686483508304
@@ -6226,6 +6287,36 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7380461055913500474
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7397476615467242943}
+  m_Layer: 6
+  m_Name: DeathCam
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7397476615467242943
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7380461055913500474}
+  m_LocalRotation: {x: -0.05613156, y: 0.09975984, z: 0.4308182, w: 0.8951497}
+  m_LocalPosition: {x: 0.029, y: -0.361, z: 0.008}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5716876241060528894}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: -10.746, y: 7.618, z: 50.684}
 --- !u!1 &8461035253649969574
 GameObject:
   m_ObjectHideFlags: 0

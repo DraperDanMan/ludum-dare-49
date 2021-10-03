@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Utils;
 
 public class PlayerMovement : MonoBehaviour
@@ -60,11 +61,18 @@ public class PlayerMovement : MonoBehaviour
     public bool Locked = false;
 
 
+    private Vector3 _startHeadEuler;
+    private Vector3 _startBodyEuler;
+
     private void Start()
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        playerFacing.x = body.eulerAngles.y;
+
+        _startHeadEuler = head.eulerAngles;
+        _startBodyEuler = body.eulerAngles;
+
+        playerFacing.x = _startBodyEuler.y;
     }
 
     private void OnApplicationFocus(bool focus)
@@ -84,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //if (Locked || UIManager.SacToggle || UIManager.Instance._invToggle) return;
-
+        if (Locked) return;
         UpdateLookDirection();
         PlayerMovementInput();
     }
@@ -156,5 +164,13 @@ public class PlayerMovement : MonoBehaviour
 
         _rigidbody.velocity = timeAffectedMovement;
         Player.Position = _rigidbody.position;
+    }
+
+    public void Reset()
+    {
+        head.eulerAngles = _startHeadEuler;
+        body.eulerAngles = _startBodyEuler;
+
+        playerFacing.x = _startBodyEuler.y;
     }
 }

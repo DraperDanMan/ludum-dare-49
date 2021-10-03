@@ -21,6 +21,12 @@ public class Player : Entity, IDamagable
     public Transform Spawn;
     public float DeathHeight = -10;
 
+    [SerializeField] private Transform _deathCam;
+    private Vector3 _deathCamDamp;
+    private Vector3 _startCamPos;
+
+    public bool IsDead { get; private set; }
+
     private float _timeScale = 1;
 
     [SerializeField] private AudioClip _shootSound;
@@ -29,6 +35,7 @@ public class Player : Entity, IDamagable
     protected void Awake()
     {
         Cam = Camera;
+        _startCamPos = Camera.transform.localPosition;
         PlayerTimeScale = LocalTimeScale; //give a copy of our local time to the static field
     }
 
@@ -36,19 +43,25 @@ public class Player : Entity, IDamagable
     {
         _timeScale = PlayerTimeScale.Value;
         PlayerActionInput();
+
+        Movement.Locked = IsDead;
         HeightDieCheck();
+        HandleDeathCam();
         Weapon.Data.CheckStage(GameManager.Kills);
     }
 
     private void PlayerActionInput()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (!IsDead)
         {
-            Shoot(true);
-        }
-        else if (Input.GetButton("Fire1"))
-        {
-            Shoot();
+            if (Input.GetButtonDown("Fire1"))
+            {
+                Shoot(true);
+            }
+            else if (Input.GetButton("Fire1"))
+            {
+                Shoot();
+            }
         }
 
         if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
@@ -82,18 +95,33 @@ public class Player : Entity, IDamagable
 
     public void Die()
     {
+        IsDead = true;
         GameManager.Instance.Stop();
         //do respawn
         //Destroy(gameObject);
     }
 
+    private void HandleDeathCam()
+    {
+        if (IsDead)
+        {
+            Camera.transform.localPosition = Vector3.SmoothDamp(Camera.transform.localPosition, _deathCam.localPosition, ref _deathCamDamp, 0.1f);
+            Camera.transform.localRotation = Quaternion.RotateTowards(Camera.transform.localRotation, _deathCam.localRotation, 2);
+        }
+    }
+
     public void Reset()
     {
-        Transform respawn = Spawn; //temp respwan at same place
+        Transform respawn = Spawn;
         transform.position = respawn.position;
         transform.rotation = respawn.rotation;
+
+        Camera.transform.localPosition = _startCamPos;
+
         LocalTimeScale.Clear();
         Weapon.Data.Reset();
+        Movement.Reset();
+        IsDead = false;
     }
 
     private void HeightDieCheck()
