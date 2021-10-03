@@ -76,13 +76,14 @@ public class GameManager : SingletonBehaviour<GameManager>
             int attempts = 0;
             while (!layer.IsSlotFree(idx))
             {
-                idx = (int)Mathf.Repeat(idx++, layer.Slots);
+                idx = (int)Mathf.Repeat(idx+1, layer.Slots);
                 attempts++;
-                if (attempts >= layer.Slots) continue;
+                if (attempts >= layer.Slots) break;
             }
 
             spawnRef.DestinationLayer = layer;
             spawnRef.DestinationSlot = idx;
+            break;
         }
 
         //try find spawn slot that is out of view now
@@ -98,6 +99,9 @@ public class GameManager : SingletonBehaviour<GameManager>
                 break;
             }
         }
+
+        spawnRef.DestinationLayer.SetSlotFilled(spawnRef.DestinationSlot);
+        spawnRef.SpawnLayer.SetSlotFilled(spawnRef.SpawnSlot);
 
         return spawnRef;
     }

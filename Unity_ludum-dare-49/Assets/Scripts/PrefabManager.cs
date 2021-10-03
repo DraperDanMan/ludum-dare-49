@@ -70,7 +70,7 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
     {
         var prefabIdx = FieldDescriptions.GetRandomIndex();
         var fieldSpawn = FieldDescriptions[prefabIdx];
-        var field = Instantiate(fieldSpawn.FieldPrefab, ActiveBits);
+        var field = Instantiate(fieldSpawn.FieldPrefab, TempBits);
         field.transform.position = position;
         field.transform.localScale = Vector3.one * Random.Range(fieldSpawn.MinScale, fieldSpawn.MaxScale);
     }
