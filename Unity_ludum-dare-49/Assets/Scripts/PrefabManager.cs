@@ -19,11 +19,20 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
 
     public GameObject AudioCuePrefab;
 
+    public GameObject NormalHitPrefab;
+    public GameObject CritHitPrefab;
+
     private readonly List<Bullet> _allBullets = new List<Bullet>();
     private readonly Stack<Bullet> _poolBullets = new Stack<Bullet>();
 
     private readonly List<AudioCue> _allAudioCues = new List<AudioCue>();
     private readonly Stack<AudioCue> _poolAudioCues = new Stack<AudioCue>();
+
+    private readonly List<VFXEffect> _allNormalHits = new List<VFXEffect>();
+    private readonly Stack<VFXEffect> _poolNormalHits = new Stack<VFXEffect>();
+
+    private readonly List<VFXEffect> _allCritHits = new List<VFXEffect>();
+    private readonly Stack<VFXEffect> _poolCritHits = new Stack<VFXEffect>();
 
     protected override void Initialize()
     {
@@ -32,6 +41,8 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
         CreateTempBits();
         CreateBullets(200);
         CreateAudios(80);
+        CreateParticle(true,30);
+        CreateParticle(false,30);
         SquareCameraFarPlanceDistance = Camera.main.farClipPlane.Squared();
     }
 
@@ -111,6 +122,63 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
         _poolAudioCues.Push(ac);
     }
 
+    private void CreateParticle(bool normal, int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            var partGO = Instantiate(normal ? NormalHitPrefab : CritHitPrefab, Vector3.zero, Quaternion.identity, ActiveBits);
+            var part = partGO.GetComponent<VFXEffect>();
+            part.ParticleType = normal ? 0 : 1;
+            if (part.ParticleType == 0)
+            {
+                _allNormalHits.Add(part);
+            }
+            else
+            {
+                _allCritHits.Add(part);
+            }
+            RepoolVFX(part);
+        }
+    }
+
+    public VFXEffect UnpoolVFX(bool normal, Vector3 position, Quaternion rotation)
+    {
+        VFXEffect effect;
+        if (normal)
+        {
+            if (_poolNormalHits.Count <= 0) CreateParticle(true, 1);
+            effect = _poolNormalHits.Pop();
+        }
+        else
+        {
+            if (_poolCritHits.Count <= 0) CreateParticle(false, 1);
+            effect = _poolCritHits.Pop();
+        }
+
+        effect.transform.parent = ActiveBits;
+        effect.transform.SetPositionAndRotation(position,rotation);
+        effect.gameObject.SetActive(true);
+        effect.InPool = false;
+        return effect;
+    }
+
+    public void RepoolVFX(VFXEffect fx)
+    {
+        fx.Reset();
+        fx.InPool = true;
+        fx.gameObject.SetActive(false);
+        fx.transform.parent = InactiveBits;
+        if (fx.ParticleType == 0)
+        {
+            _poolNormalHits.Push(fx);
+        }
+        else
+        {
+            _poolCritHits.Push(fx);
+        }
+
+    }
+
     public void Reset()
     {
         foreach (var bullet in _allBullets)
@@ -120,6 +188,15 @@ public class PrefabManager : SingletonBehaviour<PrefabManager>
         foreach (var cue in _allAudioCues)
         {
             if (!cue.InPool) RepoolAudioCue(cue);
+        }
+
+        foreach (var fx in _allNormalHits)
+        {
+            if (!fx.InPool) RepoolVFX(fx);
+        }
+        foreach (var fx in _allCritHits)
+        {
+            if (!fx.InPool) RepoolVFX(fx);
         }
         CreateTempBits();
     }

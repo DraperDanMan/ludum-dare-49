@@ -54,3 +54,5 @@ MonoBehaviour:
   EnemyPrefab: {fileID: 3674771399744699965, guid: 3cafc9ea27e47d649bedfd9b884fca09, type: 3}
   SpawnerPrefab: {fileID: 8938265371783632112, guid: 831869266bdca284097327c6b3038b54, type: 3}
   AudioCuePrefab: {fileID: 9149808932906221381, guid: 61604bf6657eb82418ef584cb4efb2f4, type: 3}
+  NormalHitPrefab: {fileID: 3832582204044575035, guid: c7a5936e16e752c4980f805c753c8083, type: 3}
+  CritHitPrefab: {fileID: 6775557980032435440, guid: 6c25d1d1690d9114e9ee94699eada9cc, type: 3}

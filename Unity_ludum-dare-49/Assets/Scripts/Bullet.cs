@@ -42,6 +42,7 @@ public class Bullet: Entity
 
     private void OnCollisionEnter(Collision other)
     {
+        var contact = other.GetContact(0);
         var rigid = other.rigidbody;
         if (rigid != null && other.collider.gameObject.layer != 0)
         {
@@ -49,7 +50,19 @@ public class Bullet: Entity
             if (damageable != null)
             {
                 damageable.TakeDamage(_damage);
+                var fx = PrefabManager.Instance.UnpoolVFX(false, contact.point, Quaternion.LookRotation(contact.normal));
+                fx.Init();
             }
+            else
+            {
+                var fx = PrefabManager.Instance.UnpoolVFX(true, contact.point, Quaternion.LookRotation(contact.normal));
+                fx.Init();
+            }
+        }
+        else
+        {
+            var fx = PrefabManager.Instance.UnpoolVFX(true, contact.point, Quaternion.LookRotation(contact.normal));
+            fx.Init();
         }
 
         PrefabManager.Instance.RepoolBullet(this);

@@ -227,6 +227,7 @@ MonoBehaviour:
   moveSpeed: 180
   turnSpeed: 35
   _visual: {fileID: 4853826992347613277}
+  _deathSound: {fileID: 8300000, guid: 3334df752932db448b7ca1145bc2306a, type: 3}
 --- !u!54 &8981355880417132605
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -394,11 +395,11 @@ PrefabInstance:
     - target: {fileID: 5888669549256806617, guid: a7baaf78c9f05b04292cdc4fda4a5734, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: b7c94d855a3eb4246a21763d7ec1e065, type: 2}
+      objectReference: {fileID: 2100000, guid: f14dbf64707b1aa418af73a538b34ec7, type: 2}
     - target: {fileID: 8431977094310596097, guid: a7baaf78c9f05b04292cdc4fda4a5734, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: b7c94d855a3eb4246a21763d7ec1e065, type: 2}
+      objectReference: {fileID: 2100000, guid: f14dbf64707b1aa418af73a538b34ec7, type: 2}
     - target: {fileID: 9069389904928844767, guid: a7baaf78c9f05b04292cdc4fda4a5734, type: 3}
       propertyPath: m_Layer
       value: 8

@@ -32,4 +32,6 @@ public class Entity : MonoBehaviour
 
     [SerializeField] protected Rigidbody _rigidbody;
 
+    public bool IsDead { get; protected set; }
+
 }

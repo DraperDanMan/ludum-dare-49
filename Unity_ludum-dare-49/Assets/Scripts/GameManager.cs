@@ -21,6 +21,8 @@ public class GameManager : SingletonBehaviour<GameManager>
     public static GameState State => Instance._gameState.CurrentState;
     private readonly StateMachine<GameState> _gameState = new StateMachine<GameState>(true);
 
+    [SerializeField] private bool _startFromMenu = false;
+
     [SerializeField] private Player _player;
 
     [SerializeField]
@@ -48,8 +50,18 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     private void Start()
     {
-        Reset();
         HUD.Instance.SetBestTime(BestTime);
+#if UNITY_EDITOR
+        if (!_startFromMenu)
+        {
+            Menu.Instance.Show(false);
+            Reset();
+            return;
+        }
+#endif
+        _player.SetDead(true);
+        Menu.Instance.Show();
+
     }
 
     private void Update()
@@ -61,6 +73,15 @@ public class GameManager : SingletonBehaviour<GameManager>
             {
                 SpawnSpawner();
                 _timelineIdx++;
+            }
+            else if (_timelineIdx >= _spawnTimeline.Count)
+            {
+                //add another timeline element forever
+                var timeline = new SpawnTimeline
+                {
+                    Time = GameTime + 2
+                };
+                _spawnTimeline.Add(timeline);
             }
 
             HUD.Instance.SetTimeAndKills(GameTime, Kills);
@@ -131,6 +152,7 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     public void SetBestScore(float time)
     {
+        if (time <= BestTime) return;
         BestTime = time;
         PlayerPrefs.SetFloat(HighScoreKey, BestTime);
         HUD.Instance.SetBestTime(BestTime);

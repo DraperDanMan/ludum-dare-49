@@ -66,9 +66,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-
         _startHeadEuler = head.eulerAngles;
         _startBodyEuler = body.eulerAngles;
 
@@ -84,12 +81,6 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
 
         //if (Locked || UIManager.SacToggle || UIManager.Instance._invToggle) return;
         if (Locked) return;

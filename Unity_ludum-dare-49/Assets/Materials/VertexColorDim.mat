@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: VertexColorDim
-  m_Shader: {fileID: -6465566751694194690, guid: e7284a63a47d931449e92e773c73433b, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: fd6070db68d4057449fe31e590bf898f, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -77,6 +77,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - Cutoff_Height: 5
+    - Edge_Width: 0.05
+    - Noise_Scale: 51
+    - Noise_Strength: 1
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -105,6 +109,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Edge_Color: {r: 1.792453, g: 0.1268245, b: 0.1268245, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 0.8018868, g: 0.4501157, b: 0.4501157, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

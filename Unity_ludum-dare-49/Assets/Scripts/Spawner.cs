@@ -7,6 +7,8 @@ using Utils;
 
 public class Spawner : Entity, IDamagable
 {
+    private static ShaderId CutoffHeight = "Cutoff_Height";
+
     public int Health = 6;
     protected int _maxHealth;
 
@@ -45,8 +47,18 @@ public class Spawner : Entity, IDamagable
 
     private Coroutine _runningCo;
 
+    [SerializeField] private AudioClip _deathSound;
+
+    [SerializeField]
+    private List<Renderer> _renderers = new List<Renderer>();
+
+    private static MaterialPropertyBlock _disolveBlock;
+
+    private float _disolveAmount = 5;
+
     protected void Awake()
     {
+        _disolveBlock ??= new MaterialPropertyBlock();
         _visualStartPos = _visual.localPosition;
         _visual.localPosition += Vector3.down * 5;
         _groundSpawnParticle.Play(true);
@@ -65,6 +77,7 @@ public class Spawner : Entity, IDamagable
 
     private void Update()
     {
+        if (IsDead) return;
         float deltaTime = Time.deltaTime * CurrentTimeScale;
         if (_timeAdjustedAliveTime >= _nextGroupTime)
         {
@@ -92,6 +105,7 @@ public class Spawner : Entity, IDamagable
 
     private void OnCollisionEnter(Collision other)
     {
+        if (IsDead) return;
         var rigid = other.rigidbody;
         if (rigid != null && other.gameObject.layer == 6)
         {
@@ -105,6 +119,7 @@ public class Spawner : Entity, IDamagable
 
     public void TakeDamage(int damage)
     {
+        if (IsDead) return;
         Health -= damage;
         //flash and play sound
         if (Health <= 0)
@@ -115,11 +130,43 @@ public class Spawner : Entity, IDamagable
 
     private void Die()
     {
+        var ac = PrefabManager.Instance.UnpoolAudioCue();
+        ac.Play(transform.position, _deathSound);
+
         GameManager.Kills++;
-        PrefabManager.Instance.CreateField(transform.position);
+        IsDead = true;
         if (Active)
             _spawnRef.SpawnLayer.SetSlotClear(_spawnRef.SpawnSlot);
         _spawnRef.DestinationLayer.SetSlotClear(_spawnRef.DestinationSlot);
+        Active = false;
+        if (_runningCo != null) StopCoroutine(_runningCo);
+        gameObject.SetLayerRecursive(12);
+        _rigidbody.useGravity = true;
+        _rigidbody.isKinematic = false;
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
+        _runningCo = StartCoroutine(DelayDoDestroy(2.5f));
+    }
+
+    private IEnumerator DelayDoDestroy(float time = 1)
+    {
+        for (float t = 0; t < 1; t+=(Time.deltaTime * CurrentTimeScale)/time)
+        {
+            _disolveAmount = Mathf.Lerp(5, -0.5f, t);
+            _disolveBlock.SetFloat(CutoffHeight, _disolveAmount);
+            foreach (var renderer in _renderers)
+            {
+                renderer.SetPropertyBlock(_disolveBlock);
+            }
+            yield return null;
+        }
+
+        DoFullDestroy();
+    }
+
+    private void DoFullDestroy()
+    {
+        PrefabManager.Instance.CreateField(transform.position);
         if (_runningCo != null) StopCoroutine(_runningCo);
         Destroy(gameObject);
     }
@@ -179,5 +226,11 @@ public class Spawner : Entity, IDamagable
         CurrentSpinSpeed = idleSpinSpeed;
         Active = true;
         _runningCo = null;
+    }
+
+    private void OnValidate()
+    {
+        if (_renderers.Count == 0)
+            _renderers = new List<Renderer>(GetComponentsInChildren<Renderer>());
     }
 }

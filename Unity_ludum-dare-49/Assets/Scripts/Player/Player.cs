@@ -25,8 +25,6 @@ public class Player : Entity, IDamagable
     private Vector3 _deathCamDamp;
     private Vector3 _startCamPos;
 
-    public bool IsDead { get; private set; }
-
     private float _timeScale = 1;
 
     [SerializeField] private AudioClip _shootSound;
@@ -37,6 +35,7 @@ public class Player : Entity, IDamagable
         Cam = Camera;
         _startCamPos = Camera.transform.localPosition;
         PlayerTimeScale = LocalTimeScale; //give a copy of our local time to the static field
+
     }
 
     private void Update()
@@ -45,6 +44,7 @@ public class Player : Entity, IDamagable
         PlayerActionInput();
 
         Movement.Locked = IsDead;
+        Time.timeScale = IsDead ? 0.2f : 1f;
         HeightDieCheck();
         HandleDeathCam();
         Weapon.Data.CheckStage(GameManager.Kills);
@@ -75,6 +75,12 @@ public class Player : Entity, IDamagable
             GameManager.Instance.Stop();
             GameManager.Instance.Reset();
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && !Menu.Instance.IsVisible)
+        {
+            Die();
+            Menu.Instance.Show();
+        }
     }
 
     public void Shoot(bool firstShot = false)
@@ -103,7 +109,7 @@ public class Player : Entity, IDamagable
 
     private void HandleDeathCam()
     {
-        if (IsDead)
+        if (IsDead && !Menu.Instance.IsVisible)
         {
             Camera.transform.localPosition = Vector3.SmoothDamp(Camera.transform.localPosition, _deathCam.localPosition, ref _deathCamDamp, 0.1f);
             Camera.transform.localRotation = Quaternion.RotateTowards(Camera.transform.localRotation, _deathCam.localRotation, 2);
@@ -122,6 +128,11 @@ public class Player : Entity, IDamagable
         Weapon.Data.Reset();
         Movement.Reset();
         IsDead = false;
+    }
+
+    public void SetDead(bool dead)
+    {
+        IsDead = dead;
     }
 
     private void HeightDieCheck()
